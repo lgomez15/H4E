@@ -24,6 +24,7 @@ class ProfesorUpdate(BaseModel):
 class ProfesorRead(ProfesorBase):
     id: int
     asignaturas: List[AsignaturaRead] = []
+    clases_ids: List[int] = []  # Agrega esta línea
 
     class Config:
         from_attributes = True

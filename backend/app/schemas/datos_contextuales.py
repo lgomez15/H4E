@@ -1,7 +1,7 @@
 # app/schemas/datos_contextuales.py
 
 from __future__ import annotations
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, Literal
 
 class DatosContextualesBase(BaseModel):
@@ -35,18 +35,6 @@ class DatosContextualesBase(BaseModel):
     walc: int
     health: int
     absences: int
-
-    @validator('age')
-    def age_must_be_valid(cls, v):
-        if not (15 <= v <= 22):
-            raise ValueError('La edad debe estar entre 15 y 22 años')
-        return v
-
-    @validator('famrel', 'freetime', 'goout', 'dalc', 'walc', 'health')
-    def score_must_be_valid(cls, v):
-        if not (1 <= v <= 5):
-            raise ValueError('El valor debe estar entre 1 y 5')
-        return v
 
 class DatosContextualesCreate(DatosContextualesBase):
     pass
@@ -84,10 +72,5 @@ class DatosContextualesUpdate(BaseModel):
 
 class DatosContextualesRead(DatosContextualesBase):
     id: int
-    estudiante: Optional[EstudianteRead] = None
 
-    class Config:
-        from_attributes = True
-
-# Importar al final para evitar importaciones circulares
-from .estudiante import EstudianteRead
+    model_config = ConfigDict(from_attributes=True)

@@ -1,12 +1,13 @@
 # app/schemas/asignatura.py
 
 from __future__ import annotations
-from pydantic import BaseModel
-from typing import Optional, List
+from pydantic import BaseModel, ConfigDict
+from typing import Optional
 
 class AsignaturaBase(BaseModel):
     nombre: str
     descripcion: Optional[str] = None
+    profesor_id: int  # Include this if applicable
 
 class AsignaturaCreate(AsignaturaBase):
     pass
@@ -14,19 +15,9 @@ class AsignaturaCreate(AsignaturaBase):
 class AsignaturaUpdate(BaseModel):
     nombre: Optional[str] = None
     descripcion: Optional[str] = None
+    profesor_id: Optional[int] = None  # Include if you have 'profesor_id'
 
 class AsignaturaRead(AsignaturaBase):
     id: int
-    profesores: List[ProfesorRead] = []
-    clases: List[ClaseRead] = []
-    estudiantes: List[EstudianteRead] = []
-    calificaciones: List[CalificacionRead] = []
 
-    class Config:
-        from_attributes = True
-
-# Importar al final para evitar importaciones circulares
-from .profesor import ProfesorRead
-from .clase import ClaseRead
-from .estudiante import EstudianteRead
-from .calificacion import CalificacionRead
+    model_config = ConfigDict(from_attributes=True)

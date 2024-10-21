@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+# app/models/administrativo.py
+
+from sqlalchemy import Column, Integer, String
 from app.database.connection import Base
 
 class Administrativo(Base):
@@ -11,6 +12,7 @@ class Administrativo(Base):
     email = Column(String, unique=True, index=True)
     telefono = Column(String, nullable=True)
     puesto = Column(String)
-    organizacion_id = Column(Integer, ForeignKey('organizaciones.id'))
 
-    organizacion = relationship('Organizacion', back_populates='administrativos')
+    # Elimina la relación con Organizacion
+    # organizacion_id = Column(Integer, ForeignKey('organizaciones.id'))
+    # organizacion = relationship('Organizacion', back_populates='administrativos')

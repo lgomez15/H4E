@@ -1,6 +1,11 @@
-from pydantic import BaseModel, EmailStr
+# app/schemas/estudiante.py
+
+from __future__ import annotations
+from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Optional
 from datetime import date
+
+from .datos_contextuales import DatosContextualesRead  # Import directly since there's no circular dependency
 
 class EstudianteBase(BaseModel):
     nombre: str
@@ -21,6 +26,6 @@ class EstudianteUpdate(BaseModel):
 
 class EstudianteRead(EstudianteBase):
     id: int
+    datos_contextuales: Optional[DatosContextualesRead] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

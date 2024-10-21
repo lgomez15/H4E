@@ -4,6 +4,8 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from app.database import Base
 from .profesor_asignatura import profesor_asignatura
+from .profesor_clase import profesor_clase
+
 
 class Profesor(Base):
     __tablename__ = 'profesores'
@@ -16,3 +18,4 @@ class Profesor(Base):
     departamento = Column(String, nullable=True)
 
     asignaturas = relationship('Asignatura', secondary=profesor_asignatura, back_populates='profesores')
+    clases = relationship('Clase', secondary=profesor_clase, back_populates='profesores')

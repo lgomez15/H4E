@@ -14,8 +14,7 @@ from .profesor import Profesor
 from .clase_asignatura import clase_asignatura
 from .estudiante_asignatura import estudiante_asignatura
 from .profesor_asignatura import profesor_asignatura
-
-#from .ai_module import IARequest, IAResponse
+from .profesor_clase import profesor_clase
 
 __all__ = [
     "Estudiante",
@@ -27,9 +26,8 @@ __all__ = [
     "Clase",
     "Organizacion",
     "DatosContextuales",
-    "clase_asignatura",  # Corregido aquí
+    "clase_asignatura",
     "profesor_asignatura",
     "estudiante_asignatura",
-    # "IARequest",
-    # "IAResponse",
+    "profesor_clase",
 ]

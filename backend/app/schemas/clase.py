@@ -20,9 +20,11 @@ class ClaseRead(ClaseBase):
     organizacion: Optional[OrganizacionRead] = None
     estudiantes: List[EstudianteRead] = []
     asignaturas: List[AsignaturaRead] = []
+    profesores_ids: List[int] = []  # Agrega esta línea
 
     class Config:
         from_attributes = True
+        fields = {'organizacion': {'exclude': {'clases'}}}
 
 # Importar al final para evitar importaciones circulares
 from .organizacion import OrganizacionRead

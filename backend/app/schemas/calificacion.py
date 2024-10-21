@@ -1,23 +1,23 @@
-from pydantic import BaseModel
+# app/schemas/calificacion.py
+
+from __future__ import annotations
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 class CalificacionBase(BaseModel):
-    estudiante_id: int
     asignatura_id: int
-    examen: str
+    estudiante_id: int
     nota: float
 
 class CalificacionCreate(CalificacionBase):
     pass
 
 class CalificacionUpdate(BaseModel):
-    estudiante_id: Optional[int] = None
     asignatura_id: Optional[int] = None
-    examen: Optional[str] = None
+    estudiante_id: Optional[int] = None
     nota: Optional[float] = None
 
 class CalificacionRead(CalificacionBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

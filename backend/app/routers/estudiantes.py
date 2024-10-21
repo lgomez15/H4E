@@ -1,9 +1,18 @@
+# app/routers/estudiantes.py
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+
 from app.schemas.estudiante import EstudianteCreate, EstudianteRead, EstudianteUpdate
+from app.schemas.calificacion import CalificacionRead  # Importar aquí
 from app.models.estudiante import Estudiante
+from app.models.calificacion import Calificacion
 from app.database.connection import get_db
+from app.schemas.datos_contextuales import DatosContextualesRead
+from app.models.datos_contextuales import DatosContextuales
+
+
 
 router = APIRouter(
     prefix="/estudiantes",
@@ -50,14 +59,17 @@ def eliminar_estudiante(estudiante_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"detail": "Estudiante eliminado correctamente"}
 
-@router.get("/clase/{clase_id}", response_model=List[EstudianteRead])
-def obtener_estudiantes_por_clase(clase_id: int, db: Session = Depends(get_db)):
-    estudiantes = db.query(Estudiante).filter(Estudiante.clase_id == clase_id).all()
-    if not estudiantes:
-        # Verificar si la clase existe
-        clase = db.query(Clase).filter(Clase.id == clase_id).first()
-        if not clase:
-            raise HTTPException(status_code=404, detail="Clase no encontrada")
-        else:
-            return []  # La clase existe pero no tiene estudiantes
-    return estudiantes
+@router.get("/datos-contextuales/{estudiante_id}", response_model=DatosContextualesRead)
+def obtener_datos_contextuales(estudiante_id: int, db: Session = Depends(get_db)):
+    datos = db.query(DatosContextuales).filter(DatosContextuales.estudiante_id == estudiante_id).first()
+    if datos is None:
+        raise HTTPException(status_code=404, detail="Datos contextuales no encontrados para este estudiante")
+    return datos
+
+@router.get("/{estudiante_id}/calificaciones", response_model=List[CalificacionRead])
+def obtener_calificaciones_estudiante(estudiante_id: int, db: Session = Depends(get_db)):
+    estudiante = db.query(Estudiante).filter(Estudiante.id == estudiante_id).first()
+    if not estudiante:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    calificaciones = db.query(Calificacion).filter(Calificacion.estudiante_id == estudiante_id).all()
+    return calificaciones
