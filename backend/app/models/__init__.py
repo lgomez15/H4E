@@ -1,15 +1,21 @@
 # app/models/__init__.py
 
-"""
-Este archivo convierte la carpeta models en un paquete de Python, permitiendo importar fácilmente los modelos desde otras partes de la aplicación.
-"""
-
-from .estudiante import Estudiante
-from .calificacion import Calificacion
-from .asignatura import Asignatura
-from .profesor import Profesor
 from .administrativo import Administrativo
+from .asignatura import Asignatura
 from .asistencia import Asistencia
+from .calificacion import Calificacion
+from .clase import Clase
+from .datos_contextuales import DatosContextuales
+from .estudiante import Estudiante
+from .organizacion import Organizacion
+from .profesor import Profesor
+
+# Tablas de asociación
+from .clase_asignatura import clase_asignatura
+from .estudiante_asignatura import estudiante_asignatura
+from .profesor_asignatura import profesor_asignatura
+
+#from .ai_module import IARequest, IAResponse
 
 __all__ = [
     "Estudiante",
@@ -18,4 +24,12 @@ __all__ = [
     "Profesor",
     "Administrativo",
     "Asistencia",
+    "Clase",
+    "Organizacion",
+    "DatosContextuales",
+    "clase_asignatura",  # Corregido aquí
+    "profesor_asignatura",
+    "estudiante_asignatura",
+    # "IARequest",
+    # "IAResponse",
 ]

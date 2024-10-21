@@ -1,204 +1,228 @@
-```markdown
-# Backend Profesional con FastAPI y MariaDB
 
-## Descripción
+## **Escuela Backend API**
 
-Este proyecto es un backend profesional diseñado con FastAPI y MariaDB para gestionar estudiantes, calificaciones, asignaturas, profesores, administrativos y asistencia. Incluye autenticación de usuarios utilizando FastAPI Users.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-## Estructura del Proyecto
+### **Descripción**
 
-```
-backend_profesional/
-├── app/
-│   ├── __init__.py
-│   ├── main.py
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── estudiante.py
-│   │   ├── calificacion.py
-│   │   ├── asignatura.py
-│   │   ├── profesor.py
-│   │   ├── administrativo.py
-│   │   └── asistencia.py
-│   ├── schemas/
-│   │   ├── __init__.py
-│   │   ├── estudiante.py
-│   │   ├── calificacion.py
-│   │   ├── asignatura.py
-│   │   ├── profesor.py
-│   │   ├── administrativo.py
-│   │   └── asistencia.py
-│   ├── routers/
-│   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── estudiantes.py
-│   │   ├── calificaciones.py
-│   │   ├── asignaturas.py
-│   │   ├── profesores.py
-│   │   ├── administrativos.py
-│   │   ├── asistencia.py
-│   │   ├── clases.py
-│   │   ├── organizaciones.py
-│   │   └── ai_module.py
-│   └── database/
-│       ├── __init__.py
-│       └── connection.py
-├── .env
-├── requirements.txt
-└── README.md
-```
+**Escuela Backend API** es una API desarrollada con **FastAPI** que gestiona las operaciones de una institución educativa. Permite gestionar organizaciones, clases, profesores, asignaturas, administrativos, estudiantes, calificaciones, asistencias y datos contextuales de los estudiantes. La API está construida utilizando **SQLAlchemy** como ORM y **MariaDB** como sistema de gestión de bases de datos.
 
-## Instalación
+### **Características**
 
-1. **Clonar el repositorio**
+- **Gestión de Organizaciones:** Crear, leer, actualizar y eliminar organizaciones educativas.
+- **Gestión de Clases:** Administrar clases asociadas a organizaciones.
+- **Gestión de Profesores:** Manejar información de profesores y sus asignaturas.
+- **Gestión de Asignaturas:** Administrar las asignaturas ofrecidas y sus detalles.
+- **Gestión de Administrativos:** Gestionar personal administrativo de la institución.
+- **Gestión de Estudiantes:** Crear y gestionar información de estudiantes.
+- **Calificaciones y Asistencias:** Registrar y consultar calificaciones y asistencias de los estudiantes.
+- **Datos Contextuales:** Almacenar información contextual adicional sobre los estudiantes.
+
+### **Tecnologías Utilizadas**
+
+- **Python 3.12**
+- **FastAPI**
+- **SQLAlchemy**
+- **MariaDB**
+- **Alembic** (para migraciones de base de datos)
+- **Pydantic**
+- **Uvicorn** (servidor ASGI)
+- **Git** (control de versiones)
+
+### **Pre-requisitos**
+
+- **Python 3.12** instalado en tu sistema.
+- **MariaDB** instalado y ejecutándose.
+- **Git** instalado para el control de versiones.
+
+### **Instalación**
+
+1. **Clonar el Repositorio**
 
    ```bash
-   git clone https://github.com/tu_usuario/backend_profesional.git
-   cd backend_profesional
+   git clone https://github.com/tu-usuario/escuela-backend.git
+   cd escuela-backend
    ```
 
-2. **Crear y activar un entorno virtual**
+2. **Crear y Activar un Entorno Virtual**
 
    ```bash
    python -m venv venv
-   source venv/bin/activate  # En Windows: venv\Scripts\activate
+   # En Windows
+   venv\Scripts\activate
+   # En macOS/Linux
+   source venv/bin/activate
    ```
 
-3. **Instalar las dependencias**
+3. **Instalar las Dependencias**
 
    ```bash
+   pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
-4. **Configurar las variables de entorno**
+### **Configuración**
 
-   Crea un archivo `.env` en la raíz del proyecto y añade las variables necesarias. Un ejemplo está proporcionado a continuación:
+1. **Configurar Variables de Entorno**
+
+   Crea un archivo `.env` en la raíz del proyecto y agrega la siguiente configuración, reemplazando los valores según tu entorno:
 
    ```env
-   # Configuración de la base de datos
-   DATABASE_URL=mariadb+mariadbconnector://usuario:contraseña@localhost:3306/nombre_base_datos
-
-   # Clave secreta para JWT
-   SECRET_KEY=TU_CLAVE_SECRETA_AQUI
-
-   # Otros parámetros de configuración
-   DEBUG=true
+   DATABASE_URL=mariadb+mariadbconnector://usuario:contraseña@localhost:3306/escuela
    ```
 
-5. **Ejecutar las migraciones de la base de datos**
+2. **Configurar la Base de Datos**
+
+   Asegúrate de que MariaDB esté ejecutándose y que la base de datos `escuela` exista. Puedes crearla con:
+
+   ```sql
+   CREATE DATABASE escuela;
+   ```
+
+3. **Aplicar Migraciones con Alembic**
+
+   Inicializa y aplica las migraciones para crear las tablas necesarias en la base de datos.
 
    ```bash
-   # TODO: Añadir comandos para migraciones si se usa Alembic u otra herramienta
+   alembic upgrade head
    ```
 
-6. **Iniciar la aplicación**
+   Si aún no has configurado Alembic, sigue estos pasos:
 
    ```bash
-   uvicorn app.main:app --reload
+   alembic init alembic
+   # Edita alembic.ini y alembic/env.py según las instrucciones proporcionadas anteriormente
+   alembic revision --autogenerate -m "Initial migration"
+   alembic upgrade head
    ```
 
-## Uso
+### **Ejecutar la Aplicación**
 
-La API estará disponible en `http://localhost:8000`. Puedes acceder a la documentación interactiva de Swagger en `http://localhost:8000/docs`.
+Inicia el servidor de desarrollo con Uvicorn:
 
-## Endpoints Disponibles
-
-### Autenticación
-
-- **Inicio de Sesión:** `POST /auth/jwt/login`
-- **Registro de Usuarios:** `POST /auth/register`
-- **Gestión de Usuarios:** `GET /users/`
-
-### Estudiantes
-
-- **Listar Estudiantes:** `GET /estudiantes/`
-- **Obtener Datos de un Estudiante:** `GET /estudiantes/{estudiante_id}`
-- **Crear Estudiante:** `POST /estudiantes/`
-- **Actualizar Estudiante:** `PUT /estudiantes/{estudiante_id}`
-- **Eliminar Estudiante:** `DELETE /estudiantes/{estudiante_id}`
-
-### Calificaciones
-
-- **Listar Calificaciones:** `GET /calificaciones/`
-- **Obtener Calificación:** `GET /calificaciones/{calificacion_id}`
-- **Crear Calificación:** `POST /calificaciones/`
-- **Actualizar Calificación:** `PUT /calificaciones/{calificacion_id}`
-- **Eliminar Calificación:** `DELETE /calificaciones/{calificacion_id}`
-
-### Asignaturas
-
-- **Listar Asignaturas:** `GET /asignaturas/`
-- **Obtener Asignatura:** `GET /asignaturas/{asignatura_id}`
-- **Crear Asignatura:** `POST /asignaturas/`
-- **Actualizar Asignatura:** `PUT /asignaturas/{asignatura_id}`
-- **Eliminar Asignatura:** `DELETE /asignaturas/{asignatura_id}`
-
-### Profesores
-
-- **Listar Profesores:** `GET /profesores/`
-- **Obtener Profesor:** `GET /profesores/{profesor_id}`
-- **Crear Profesor:** `POST /profesores/`
-- **Actualizar Profesor:** `PUT /profesores/{profesor_id}`
-- **Eliminar Profesor:** `DELETE /profesores/{profesor_id}`
-
-### Administrativos
-
-- **Listar Administrativos:** `GET /administrativos/`
-- **Obtener Administrativo:** `GET /administrativos/{administrativo_id}`
-- **Crear Administrativo:** `POST /administrativos/`
-- **Actualizar Administrativo:** `PUT /administrativos/{administrativo_id}`
-- **Eliminar Administrativo:** `DELETE /administrativos/{administrativo_id}`
-
-### Asistencia
-
-- **Registrar Asistencia:** `POST /asistencia/`
-- **Listar Asistencias:** `GET /asistencia/`
-- **Obtener Asistencia:** `GET /asistencia/{asistencia_id}`
-- **Actualizar Asistencia:** `PUT /asistencia/{asistencia_id}`
-- **Eliminar Asistencia:** `DELETE /asistencia/{asistencia_id}`
-
-### Clases
-
-- **Listar Clases por Organización:** `GET /clases/`
-- **Obtener Clase por ID:** `GET /clases/{clase_id}`
-
-### Organizaciones
-
-- **Listar Organizaciones por Profesor:** `GET /organizaciones/`
-- **Obtener Organización por ID:** `GET /organizaciones/{organizacion_id}`
-
-### Módulo de IA
-
-- **Ejecutar Módulo de IA:** `POST /ai_module/`
-
-### Media de Calificaciones
-
-- **Obtener Media de Calificaciones:** `GET /calificaciones/media/{estudiante_id}/{asignatura_id}`
-
-## Contribución
-
-1. **Fork** el proyecto
-2. **Crea** tu feature branch (`git checkout -b feature/nueva-caracteristica`)
-3. **Commit** tus cambios (`git commit -m 'Añadir nueva característica'`)
-4. **Push** a la rama (`git push origin feature/nueva-caracteristica`)
-5. **Abre** un Pull Request
-
-## Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+```bash
+uvicorn app.main:app --reload --log-level debug
 ```
 
-### Notas Adicionales
+La API estará disponible en `http://127.0.0.1:8000`.
 
-- **Modularidad:** Cada módulo funcional (`auth`, `estudiantes`, `calificaciones`, etc.) tiene su propio router, modelo y esquema, lo que facilita el mantenimiento y la escalabilidad.
-  
-- **Autenticación:** Se utiliza `FastAPI Users` para manejar la autenticación de usuarios, simplificando la implementación de registro, inicio de sesión y gestión de usuarios.
-  
-- **Variables de Entorno:** La configuración sensible, como las credenciales de la base de datos y la clave secreta para JWT, se gestiona a través de un archivo `.env` para mantener la seguridad y flexibilidad.
-  
-- **Buenas Prácticas:** Se siguen convenciones de código limpias, separación de responsabilidades y uso de Pydantic para la validación de datos, alineándose con las mejores prácticas recomendadas para proyectos con FastAPI y MariaDB.
-  
-- **Gestión de Dependencias:** Todas las dependencias necesarias están listadas en `requirements.txt`, facilitando la instalación y el mantenimiento del entorno de desarrollo.
-  
-- **Documentación:** El archivo `README.md` proporciona una guía clara sobre cómo configurar, ejecutar y contribuir al proyecto, lo que mejora la accesibilidad para nuevos desarrolladores.
+### **Documentación de la API**
+
+FastAPI genera automáticamente documentación interactiva que puedes acceder en:
+
+- **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+
+### **Uso de la API**
+
+#### **Obtener Todos los Estudiantes de una Clase**
+
+- **Endpoint:** `GET /estudiantes/clase/{clase_id}`
+- **Descripción:** Obtiene una lista de todos los estudiantes que pertenecen a la clase especificada por `clase_id`.
+- **Parámetros:**
+  - `clase_id` (int): ID de la clase.
+- **Respuesta Exitosa:**
+  - **Código:** `200 OK`
+  - **Contenido:**
+    ```json
+    [
+        {
+            "id": 1,
+            "nombre": "Luis",
+            "apellido": "Hernández",
+            "fecha_nacimiento": "2008-05-15",
+            "email": "luis.hernandez@escuela.com",
+            "clase_id": 1
+        },
+        {
+            "id": 2,
+            "nombre": "Sofía",
+            "apellido": "Torres",
+            "fecha_nacimiento": "2009-08-22",
+            "email": "sofia.torres@escuela.com",
+            "clase_id": 2
+        }
+    ]
+    ```
+
+### **Estructura del Proyecto**
+
+```
+backend/
+├── app/
+│   ├── main.py
+│   ├── routers/
+│   │   ├── __init__.py
+│   │   ├── estudiantes.py
+│   │   ├── profesores.py
+│   │   ├── asignaturas.py
+│   │   ├── clases.py
+│   │   ├── administrativos.py
+│   │   ├── asistencias.py
+│   │   ├── calificaciones.py
+│   │   ├── organizaciones.py
+│   │   └── datos_contextuales.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── administrativo.py
+│   │   ├── asignatura.py
+│   │   ├── asistencia.py
+│   │   ├── calificacion.py
+│   │   ├── clase.py
+│   │   ├── datos_contextuales.py
+│   │   ├── estudiante.py
+│   │   ├── organizacion.py
+│   │   ├── profesor.py
+│   │   ├── clase_asignatura.py
+│   │   ├── estudiante_asignatura.py
+│   │   └── profesor_asignatura.py
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   ├── administrativo.py
+│   │   ├── asignatura.py
+│   │   ├── asistencia.py
+│   │   ├── calificacion.py
+│   │   ├── clase.py
+│   │   ├── datos_contextuales.py
+│   │   ├── estudiante.py
+│   │   ├── organizacion.py
+│   │   └── profesor.py
+│   └── database/
+│       ├── __init__.py
+│       └── connection.py
+├── alembic/
+├── venv/
+├── .gitignore
+├── README.md
+└── requirements.txt
+```
+
+### **Contribución**
+
+¡Contribuciones son bienvenidas! Por favor, sigue estos pasos para contribuir:
+
+1. **Fork** el repositorio.
+2. Crea una **rama** para tu feature (`git checkout -b feature/nueva-funcionalidad`).
+3. **Commitea** tus cambios (`git commit -m 'Añadir nueva funcionalidad'`).
+4. **Push** a la rama (`git push origin feature/nueva-funcionalidad`).
+5. Abre un **Pull Request**.
+
+### **Licencia**
+
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+
+### **Contacto**
+
+Para cualquier consulta o sugerencia, por favor, contacta a:
+
+- **Nombre:** Luis García
+- **Email:** luis.garcia@ejemplo.com
+
+---
+
+### **Notas Finales**
+
+- **Mantén tu `.gitignore` actualizado** para evitar subir archivos sensibles o innecesarios al repositorio.
+- **Realiza pruebas** exhaustivas para asegurarte de que todos los endpoints funcionan correctamente.
+- **Actualiza la documentación** conforme añades nuevas funcionalidades o realizas cambios en la estructura de la API.
 
