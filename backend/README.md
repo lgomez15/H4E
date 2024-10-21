@@ -1,11 +1,4 @@
 
-**2. Archivo `README.md`**
-
-### **Ubicación:**
-Coloca el archivo `README.md` en la **raíz** de tu proyecto (`C:\Users\luisg\Desktop\Archive\backend\`).
-
-### **Contenido del `README.md`:**
-
 ```markdown
 # Escuela Backend API
 
