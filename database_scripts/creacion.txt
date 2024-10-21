@@ -1,0 +1,118 @@
+-- 1. Crear la Base de Datos
+CREATE DATABASE IF NOT EXISTS escuela
+    DEFAULT CHARACTER SET latin1
+    DEFAULT COLLATE latin1_swedish_ci;
+USE escuela;
+
+-- 2. Crear la Tabla de Organizaciones
+CREATE TABLE IF NOT EXISTS organizaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(255),
+    telefono VARCHAR(20)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- 3. Crear la Tabla de Clases
+CREATE TABLE IF NOT EXISTS clases (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    organizacion_id INT NOT NULL,
+    FOREIGN KEY (organizacion_id) REFERENCES organizaciones(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- 4. Crear la Tabla de Profesores
+CREATE TABLE IF NOT EXISTS profesores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    telefono VARCHAR(20),
+    departamento VARCHAR(100)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- 5. Crear la Tabla de Asignaturas
+CREATE TABLE IF NOT EXISTS asignaturas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(255),
+    profesor_id INT NOT NULL,
+    FOREIGN KEY (profesor_id) REFERENCES profesores(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- 6. Crear la Tabla de Administrativos
+CREATE TABLE IF NOT EXISTS administrativos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    telefono VARCHAR(20),
+    puesto VARCHAR(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- 7. Crear la Tabla de Estudiantes
+CREATE TABLE IF NOT EXISTS estudiantes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    clase_id INT NOT NULL,
+    FOREIGN KEY (clase_id) REFERENCES clases(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- 8. Crear la Tabla de Calificaciones
+CREATE TABLE IF NOT EXISTS calificaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    estudiante_id INT NOT NULL,
+    asignatura_id INT NOT NULL,
+    examen VARCHAR(50) NOT NULL,
+    nota FLOAT NOT NULL,
+    FOREIGN KEY (estudiante_id) REFERENCES estudiantes(id) ON DELETE CASCADE,
+    FOREIGN KEY (asignatura_id) REFERENCES asignaturas(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- 9. Crear la Tabla de Asistencias
+CREATE TABLE IF NOT EXISTS asistencias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    estudiante_id INT NOT NULL,
+    fecha DATE NOT NULL,
+    presente BOOLEAN NOT NULL DEFAULT TRUE,
+    observaciones VARCHAR(255),
+    FOREIGN KEY (estudiante_id) REFERENCES estudiantes(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- 10. Crear la Tabla de Datos Contextuales de los Alumnos
+CREATE TABLE IF NOT EXISTS datos_contextuales (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    estudiante_id INT NOT NULL,
+    sex CHAR(1) NOT NULL CHECK (sex IN ('F', 'M')),
+    age INT NOT NULL CHECK (age BETWEEN 15 AND 22),
+    address CHAR(1) NOT NULL CHECK (address IN ('U', 'R')),
+    famsize CHAR(3) NOT NULL CHECK (famsize IN ('LE3', 'GT3')),
+    pstatus CHAR(1) NOT NULL CHECK (pstatus IN ('T', 'A')),
+    medu TINYINT NOT NULL CHECK (medu BETWEEN 0 AND 4),
+    fedu TINYINT NOT NULL CHECK (fedu BETWEEN 0 AND 4),
+    mjob ENUM('teacher', 'health', 'services', 'at_home', 'other') NOT NULL,
+    fjob ENUM('teacher', 'health', 'services', 'at_home', 'other') NOT NULL,
+    reason ENUM('home', 'reputation', 'course', 'other') NOT NULL,
+    guardian ENUM('mother', 'father', 'other') NOT NULL,
+    traveltime TINYINT NOT NULL CHECK (traveltime BETWEEN 1 AND 4),
+    studytime TINYINT NOT NULL CHECK (studytime BETWEEN 1 AND 4),
+    failures TINYINT NOT NULL CHECK (failures BETWEEN 0 AND 4),
+    schoolsup BOOLEAN NOT NULL DEFAULT FALSE,
+    famsup BOOLEAN NOT NULL DEFAULT FALSE,
+    paid BOOLEAN NOT NULL DEFAULT FALSE,
+    activities BOOLEAN NOT NULL DEFAULT FALSE,
+    nursery BOOLEAN NOT NULL DEFAULT FALSE,
+    higher BOOLEAN NOT NULL DEFAULT FALSE,
+    internet BOOLEAN NOT NULL DEFAULT FALSE,
+    romantic BOOLEAN NOT NULL DEFAULT FALSE,
+    famrel TINYINT NOT NULL CHECK (famrel BETWEEN 1 AND 5),
+    freetime TINYINT NOT NULL CHECK (freetime BETWEEN 1 AND 5),
+    goout TINYINT NOT NULL CHECK (goout BETWEEN 1 AND 5),
+    dalc TINYINT NOT NULL CHECK (dalc BETWEEN 1 AND 5),
+    walc TINYINT NOT NULL CHECK (walc BETWEEN 1 AND 5),
+    health TINYINT NOT NULL CHECK (health BETWEEN 1 AND 5),
+    absences INT NOT NULL CHECK (absences BETWEEN 0 AND 93),
+    FOREIGN KEY (estudiante_id) REFERENCES estudiantes(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
