@@ -1,5 +1,10 @@
 
+<<<<<<< HEAD
 ## **Escuela Backend API**
+=======
+```markdown
+# Escuela Backend API
+>>>>>>> origin/Back-End
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
