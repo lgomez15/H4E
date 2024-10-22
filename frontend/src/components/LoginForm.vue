@@ -1,3 +1,5 @@
+<!-- src/components/LoginForm.vue -->
+
 <template>
   <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -71,21 +73,51 @@ import axios from 'axios';
 import { useAuthStore } from '../store/auth';
 import { useRouter } from 'vue-router';
 
+// Definir referencias para los campos de entrada
 const email = ref('');
 const password = ref('');
+
+// Acceder al store de autenticación
 const authStore = useAuthStore();
+
+// Acceder al router para redireccionar después del login
 const router = useRouter();
 
+/**
+ * Función para manejar el inicio de sesión.
+ */
 const handleLogin = async () => {
   try {
-    const response = await axios.post('http://127.0.0.1:8000/login', {
-      email: email.value,
-      password: password.value,
+    // Crear los parámetros para la petición form-urlencoded
+    const params = new URLSearchParams();
+    params.append('username', email.value); // OAuth2PasswordRequestForm usa 'username' para el email
+    params.append('password', password.value);
+
+    // Realizar la petición POST al backend
+    const response = await axios.post('http://127.0.0.1:8000/auth/jwt/login', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      withCredentials: true, // Si estás usando cookies para almacenar el token
     });
-    authStore.login(response.data);
+
+    console.log('Respuesta del backend:', response.data); // Log para verificar la respuesta
+
+    // Verificar que la respuesta contiene el objeto 'user'
+    if (!response.data.user) {
+      throw new Error('No se recibió la información del usuario desde el backend.');
+    }
+
+    // Pasar todo el objeto 'user' al store para almacenar los campos específicos
+    authStore.login(response.data.user);
+
+    console.log('Usuario autenticado:', authStore.user); // Verificar en consola
+
+    // Redirigir al Dashboard
     router.push({ name: 'Dashboard' });
   } catch (error) {
-    alert(error.response?.data?.detail || 'Error al iniciar sesión');
+    console.error(error);
+    alert(error.response?.data?.detail || error.message || 'Error al iniciar sesión');
   }
 };
 </script>

@@ -1,5 +1,22 @@
+<!-- src/components/Dashboard.vue -->
+
 <template>
   <div>
+    <!-- Modal para la Descripción del Estudiante -->
+    <transition name="modal">
+      <div v-if="estudianteSeleccionado" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-lg shadow-lg w-3/4 max-w-md p-6 relative">
+          <button
+            class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            @click="cerrarModal"
+          >
+            <XMarkIcon class="h-6 w-6" />
+          </button>
+          <Descripcion :estudiante="estudianteSeleccionado" />
+        </div>
+      </div>
+    </transition>
+
     <TransitionRoot as="template" :show="sidebarOpen">
       <Dialog class="relative z-50 lg:hidden" @close="sidebarOpen = false">
         <TransitionChild
@@ -50,35 +67,39 @@
                   <ul role="list" class="flex flex-1 flex-col gap-y-7">
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
-                        <li v-for="item in navigation" :key="item.name">
+                        <!-- Renderizar las clases dinámicamente -->
+                        <li v-for="clase in clases" :key="clase.id">
                           <a
-                            :href="item.href"
+                            href="#"
                             :class="[
-                              item.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white',
-                              'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6'
+                              claseSeleccionada && claseSeleccionada.id === clase.id
+                                ? 'bg-gray-700 text-white'
+                                : 'text-gray-400 hover:bg-gray-800 hover:text-white',
+                              'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 cursor-pointer'
                             ]"
+                            @click.prevent="seleccionarClase(clase.id)"
                           >
-                            <component :is="item.icon" class="h-6 w-6 shrink-0" aria-hidden="true" />
-                            {{ item.name }}
+                            <!-- Puedes agregar un icono personalizado para las clases -->
+                            <UsersIcon class="h-6 w-6 shrink-0" aria-hidden="true" />
+                            {{ clase.nombre }}
                           </a>
                         </li>
                       </ul>
                     </li>
                     <li>
-                      <div class="text-xs font-semibold leading-6 text-gray-400">Your teams</div>
+                      <div class="text-xs font-semibold leading-6 text-gray-400">Tu Organización</div>
                       <ul role="list" class="-mx-2 mt-2 space-y-1">
-                        <li v-for="team in teams" :key="team.name">
+                        <li>
                           <a
-                            :href="team.href"
+                            href="#"
                             :class="[
-                              team.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white',
-                              'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6'
+                              'text-gray-400 hover:bg-gray-800 hover:text-white',
+                              'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 cursor-pointer'
                             ]"
                           >
-                            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">
-                              {{ team.initial }}
-                            </span>
-                            <span class="truncate">{{ team.name }}</span>
+                            <!-- Información de la organización -->
+                            <HomeIcon class="h-6 w-6 shrink-0" aria-hidden="true" />
+                            {{ organizacion.nombre }}
                           </a>
                         </li>
                       </ul>
@@ -112,35 +133,39 @@
           <ul role="list" class="flex flex-1 flex-col gap-y-7">
             <li>
               <ul role="list" class="-mx-2 space-y-1">
-                <li v-for="item in navigation" :key="item.name">
+                <!-- Renderizar las clases dinámicamente -->
+                <li v-for="clase in clases" :key="clase.id">
                   <a
-                    :href="item.href"
+                    href="#"
                     :class="[
-                      item.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white',
-                      'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6'
+                      claseSeleccionada && claseSeleccionada.id === clase.id
+                        ? 'bg-gray-700 text-white'
+                        : 'text-gray-400 hover:bg-gray-800 hover:text-white',
+                      'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 cursor-pointer'
                     ]"
+                    @click.prevent="seleccionarClase(clase.id)"
                   >
-                    <component :is="item.icon" class="h-6 w-6 shrink-0" aria-hidden="true" />
-                    {{ item.name }}
+                    <!-- Puedes agregar un icono personalizado para las clases -->
+                    <UsersIcon class="h-6 w-6 shrink-0" aria-hidden="true" />
+                    {{ clase.nombre }}
                   </a>
                 </li>
               </ul>
             </li>
             <li>
-              <div class="text-xs font-semibold leading-6 text-gray-400">Your teams</div>
+              <div class="text-xs font-semibold leading-6 text-gray-400">Tu Organización</div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
-                <li v-for="team in teams" :key="team.name">
+                <li>
                   <a
-                    :href="team.href"
+                    href="#"
                     :class="[
-                      team.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white',
-                      'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6'
+                      'text-gray-400 hover:bg-gray-800 hover:text-white',
+                      'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 cursor-pointer'
                     ]"
                   >
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">
-                      {{ team.initial }}
-                    </span>
-                    <span class="truncate">{{ team.name }}</span>
+                    <!-- Información de la organización -->
+                    <HomeIcon class="h-6 w-6 shrink-0" aria-hidden="true" />
+                    {{ organizacion.nombre }}
                   </a>
                 </li>
               </ul>
@@ -228,9 +253,37 @@
 
       <main class="py-10">
         <div class="px-4 sm:px-6 lg:px-8">
-          <!-- Contenido del dashboard -->
-          <h1 class="text-2xl font-semibold text-gray-900">Bienvenido, {{ userName }}</h1>
-          <!-- Más contenido aquí -->
+          <!-- Título del Dashboard -->
+          <h1 class="text-2xl font-semibold text-gray-900 mb-6">Bienvenido, {{ userName }}</h1>
+
+          <!-- Lista de Estudiantes -->
+          <div v-if="claseSeleccionada" class="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul role="list" class="divide-y divide-gray-200">
+              <li v-for="estudiante in estudiantes" :key="estudiante.id" class="px-4 py-4 sm:px-6 cursor-pointer hover:bg-gray-50" @click="seleccionarEstudiante(estudiante.id)">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-medium text-indigo-600 truncate">{{ estudiante.nombre }} {{ estudiante.apellido }}</p>
+                  <div class="ml-2 flex-shrink-0 flex">
+                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      {{ estudiante.email }}
+                    </p>
+                  </div>
+                </div>
+                <div class="mt-2 sm:flex sm:justify-between">
+                  <div class="sm:flex">
+                    <p class="flex items-center text-sm text-gray-500">
+                      <CalendarIcon class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+                      Fecha de Nacimiento: {{ estudiante.fecha_nacimiento }}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Mensaje cuando no hay una clase seleccionada -->
+          <div v-else class="text-gray-500">
+            Selecciona una clase en la barra lateral para ver la lista de estudiantes.
+          </div>
         </div>
       </main>
     </div>
@@ -238,8 +291,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '../store/auth';
+import Descripcion from '../components/Descripcion.vue';
 import logo from "../assets/logo-dark.svg";
 import {
   Dialog,
@@ -255,16 +309,19 @@ import {
   Bars3Icon,
   BellIcon,
   Cog6ToothIcon,
-  HomeIcon, // Importar HomeIcon
-  UsersIcon, // Importar UsersIcon
+  HomeIcon,
+  UsersIcon,
   XMarkIcon,
   ChevronDownIcon,
-  MagnifyingGlassIcon
-} from '@heroicons/vue/24/outline'; // Asegúrate de importar todos los iconos que utilizas
+  MagnifyingGlassIcon,
+  CalendarIcon
+} from '@heroicons/vue/24/outline';
+import { PaperClipIcon } from '@heroicons/vue/20/solid' // Para Descripcion.vue
 
+// Datos de navegación
 const navigation = [
-  { name: 'Organizaciones', href: '#', icon: HomeIcon, current: true },
-  { name: 'Clases', href: '#', icon: UsersIcon, current: false },
+  { name: 'Organizaciones', href: '#', icon: HomeIcon, current: false },
+  { name: 'Clases', href: '#', icon: UsersIcon, current: true },
 ];
 const teams = [
   { id: 1, name: 'Primero B', href: '#', initial: '1B', current: false },
@@ -278,7 +335,36 @@ const userNavigation = [
 const sidebarOpen = ref(false);
 const authStore = useAuthStore();
 
+// Computed properties para acceder a las clases, usuario y estudiantes
+const clases = computed(() => authStore.clases);
+const claseSeleccionada = computed(() => authStore.claseSeleccionada);
+const estudiantes = computed(() => authStore.estudiantes);
+const estudianteSeleccionado = computed(() => authStore.estudianteSeleccionado);
+const organizacion = computed(() => {
+  if (clases.value.length > 0) {
+    return clases.value[0].organizacion; // Asumiendo que todas las clases pertenecen a la misma organización
+  }
+  return { nombre: 'Sin Organización', direccion: '', telefono: '', id: null };
+});
 const userName = computed(() => authStore.getUserName);
+const userEmail = computed(() => authStore.getUserEmail);
+const userDepartment = computed(() => authStore.getUserDepartment);
+const userPhone = computed(() => authStore.getUserPhone);
+
+// Función para seleccionar una clase
+const seleccionarClase = async (claseId) => {
+  await authStore.seleccionarClase(claseId);
+};
+
+// Función para seleccionar un estudiante
+const seleccionarEstudiante = async (estudianteId) => {
+  await authStore.seleccionarEstudiante(estudianteId);
+};
+
+// Función para cerrar el modal de descripción
+const cerrarModal = () => {
+  authStore.estudianteSeleccionado = null;
+};
 
 // Manejar la acción de cerrar sesión
 const handleUserNavigation = (item) => {
@@ -293,4 +379,23 @@ const handleUserNavigation = (item) => {
 // Importar useRouter para redirigir después de cerrar sesión
 import { useRouter } from 'vue-router';
 const router = useRouter();
+
+// Cargar los datos del usuario al montar el componente
+onMounted(() => {
+  if (authStore.isAuthenticated && authStore.clases.length === 0) {
+    authStore.fetchClases();
+  }
+});
 </script>
+
+<style scoped>
+/* Transición para el modal */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+</style>
