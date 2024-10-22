@@ -13,6 +13,3 @@ class Administrativo(Base):
     telefono = Column(String, nullable=True)
     puesto = Column(String)
 
-    # Elimina la relación con Organizacion
-    # organizacion_id = Column(Integer, ForeignKey('organizaciones.id'))
-    # organizacion = relationship('Organizacion', back_populates='administrativos')

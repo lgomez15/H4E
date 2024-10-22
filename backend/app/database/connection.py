@@ -1,40 +1,38 @@
 # app/database/connection.py
 
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, TIMESTAMP, func
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from dotenv import load_dotenv
+from fastapi import Depends
 
-# Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 
-# Obtener la URL de la base de datos desde las variables de entorno
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
     raise ValueError("La variable de entorno 'DATABASE_URL' no está definida.")
 
-# Crear el motor de la base de datos
 engine = create_engine(
     DATABASE_URL,
-    echo=True,  # Habilitar el log de SQL para depuración
-    pool_pre_ping=True  # Verificar conexiones antes de usarlas
+    echo=True,
+    pool_pre_ping=True
 )
 
-# Crear una fábrica de sesiones
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Declarative base para los modelos
 Base = declarative_base()
 
-def get_db():
-    """
-    Generador que proporciona una sesión de base de datos y se asegura de cerrarla después de usarla.
-    Utilizado como dependencia en las rutas de FastAPI.
-    """
+def get_db() -> Session:
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
+
+def get_user_db(db: Session = Depends(get_db)):
+    from app.models.user import User  # Importación local para evitar circularidad
+    return SQLAlchemyUserDatabase(db, User)

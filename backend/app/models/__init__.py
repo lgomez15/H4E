@@ -1,6 +1,6 @@
 # app/models/__init__.py
 
-from .administrativo import Administrativo
+#from .administrativo import Administrativo
 from .asignatura import Asignatura
 from .asistencia import Asistencia
 from .calificacion import Calificacion
@@ -9,6 +9,7 @@ from .datos_contextuales import DatosContextuales
 from .estudiante import Estudiante
 from .organizacion import Organizacion
 from .profesor import Profesor
+from .user import User
 
 # Tablas de asociación
 from .clase_asignatura import clase_asignatura
@@ -30,4 +31,5 @@ __all__ = [
     "profesor_asignatura",
     "estudiante_asignatura",
     "profesor_clase",
+    "User",
 ]

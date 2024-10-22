@@ -1,8 +1,14 @@
-# app/schemas/profesor.py
-
 from __future__ import annotations
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
+
+# Asegúrate de que AsignaturaRead está definido en app/schemas/asignatura.py
+class AsignaturaRead(BaseModel):
+    id: int
+    nombre: str
+
+    class Config:
+        from_attributes = True
 
 class ProfesorBase(BaseModel):
     nombre: str
@@ -24,10 +30,7 @@ class ProfesorUpdate(BaseModel):
 class ProfesorRead(ProfesorBase):
     id: int
     asignaturas: List[AsignaturaRead] = []
-    clases_ids: List[int] = []  # Agrega esta línea
+    clases_ids: List[int] = []
 
     class Config:
         from_attributes = True
-
-# Importar al final para evitar importaciones circulares
-from .asignatura import AsignaturaRead

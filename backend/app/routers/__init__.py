@@ -7,6 +7,7 @@ from .asistencia import router as asistencia_router
 from .calificaciones import router as calificaciones_router
 from .organizaciones import router as organizaciones_router
 from .datos_contextuales import router as datos_contextuales_router
+from .auth import auth_router
 # from .ai_module import router as ai_module_router  # Descomenta si tienes este módulo
 
 __all__ = [
@@ -19,5 +20,6 @@ __all__ = [
     "calificaciones_router",
     "organizaciones_router",
     "datos_contextuales_router",
+    "auth_router",
     # "ai_module_router",
 ]

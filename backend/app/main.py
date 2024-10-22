@@ -10,10 +10,11 @@ from app.routers import (
     asignaturas_router,
     clases_router,
     administrativos_router,
-    asistencia_router,  # Changed from 'asistencias_router' to 'asistencia_router'
+    asistencia_router,
     calificaciones_router,
     organizaciones_router,
     datos_contextuales_router,
+    auth_router,  # Importamos el router de autenticación
     # ai_module_router,  # Descomenta esta línea si tienes este módulo
 )
 
@@ -37,28 +38,31 @@ app = FastAPI(
 
 # Configuración de CORS
 origins = [
+    "http://localhost:5173",        # Origen de tu frontend
+    "http://127.0.0.1:5173",        # Alternativa al origen anterior
     "http://localhost",
     "http://localhost:8000",
     "http://localhost:3000",
-    "*",
+    "http://127.0.0.1",              # Asegúrate de incluir variantes si las usas
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Permitir todos los orígenes: ["*"]
-    allow_credentials=True,
-    allow_methods=["*"],  # Permitir todos los métodos HTTP
-    allow_headers=["*"],  # Permitir todos los encabezados
+    allow_origins=origins,           # Lista de orígenes permitidos
+    allow_credentials=True,         # Permitir credenciales
+    allow_methods=["*"],             # Permitir todos los métodos HTTP
+    allow_headers=["*"],             # Permitir todas las cabeceras
 )
 logger.info("Middleware de CORS configurado.")
 
 # Include routers
+app.include_router(auth_router)  # Incluimos el router de autenticación
 app.include_router(estudiantes_router)
 app.include_router(profesores_router)
 app.include_router(asignaturas_router)
 app.include_router(clases_router)
 app.include_router(administrativos_router)
-app.include_router(asistencia_router)  # Corrected router name
+app.include_router(asistencia_router)
 app.include_router(calificaciones_router)
 app.include_router(organizaciones_router)
 app.include_router(datos_contextuales_router)

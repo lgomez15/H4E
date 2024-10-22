@@ -19,6 +19,7 @@ class AsistenciaUpdate(BaseModel):
 
 class AsistenciaRead(AsistenciaBase):
     id: int
+    
 
     class Config:
         orm_mode = True  # Si usas Pydantic v1

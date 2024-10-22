@@ -11,6 +11,9 @@ from app.models.calificacion import Calificacion
 from app.database.connection import get_db
 from app.schemas.datos_contextuales import DatosContextualesRead
 from app.models.datos_contextuales import DatosContextuales
+from app.schemas.asistencia import AsistenciaRead
+from app.models.asistencia import Asistencia
+
 
 
 
@@ -73,3 +76,13 @@ def obtener_calificaciones_estudiante(estudiante_id: int, db: Session = Depends(
         raise HTTPException(status_code=404, detail="Estudiante no encontrado")
     calificaciones = db.query(Calificacion).filter(Calificacion.estudiante_id == estudiante_id).all()
     return calificaciones
+
+
+@router.get("/asistencias/{estudiante_id}", response_model=List[AsistenciaRead])
+def obtener_asistencias_estudiante(estudiante_id: int, db: Session = Depends(get_db)):
+    print("estudiante_id", estudiante_id)
+    estudiante = db.query(Estudiante).filter(Estudiante.id == estudiante_id).first()
+    if not estudiante:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    asistencias = db.query(Asistencia).filter(Asistencia.estudiante_id == estudiante_id).all()
+    return asistencias
